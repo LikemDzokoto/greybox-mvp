@@ -22,7 +22,7 @@ export default function TransferCUSD() {
 
       // Set the provider and the connected account
       setProvider(connectedProvider);
-      const accounts = await connectedProvider.listAccounts();
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       setAccount(accounts[0]);
     } catch (error) {
       console.error("Error connecting to wallet:", error);
@@ -69,8 +69,12 @@ export default function TransferCUSD() {
   };
 
   useEffect(() => {
-    // Automatically connect the wallet when the component mounts
-    connectWalletHandler();
+    const connectToWallet = async () => {
+      if (window.ethereum) {
+        await connectWalletHandler();
+      }
+    };
+    connectToWallet();
   }, []);
 
   const closePopup = () => {
